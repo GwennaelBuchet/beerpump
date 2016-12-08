@@ -1,17 +1,17 @@
 #include <Bridge.h>
-#include <Console.h>
+//#include <Console.h>
 
 #include <HttpClient.h>
 
-#include <Adafruit_LEDBackpack.h>
-#include <Adafruit_GFX.h>
-#include <Wire.h>
-
+/*#include <Adafruit_LEDBackpack.h>
+  #include <Adafruit_GFX.h>
+  #include <Wire.h>
+*/
 #define LED_KO        12
 #define LED_OK        13
 #define FLOW_METER    7
 
-Adafruit_7segment matrix = Adafruit_7segment();
+//Adafruit_7segment matrix = Adafruit_7segment();
 
 double _totalQuantity = 0.0;
 double debit = 0.00225;
@@ -24,26 +24,27 @@ void setup() {
   _setKO();
 
   Bridge.begin(); //Yun Bridge
-  Console.begin();
-  while (!Console);
+  Serial.begin(9600);
+  while (!Serial);
 
-  matrix.begin(0x70);
-  matrix.setBrightness(2);
-  displayQuantity(_totalQuantity);
-
-  Console.println("Application Up !!!");
+  /*matrix.begin(0x70);
+    matrix.setBrightness(2);
+    displayQuantity(_totalQuantity);
+  */
+  Serial.println("Application Up !!!");
   _setOK();
 }
 
 void loop() {
   int flow = digitalRead(FLOW_METER);
 
+
   if (flow > 0) {
     _totalQuantity += debit;
 
     displayQuantity(_totalQuantity);
 
-    Console.println(_totalQuantity);
+    Serial.println(_totalQuantity);
 
     sendQuantity(debit);
   }
@@ -52,11 +53,11 @@ void loop() {
 }
 
 /**
- * Display total quantity drunk on Adafruit_7segment
- */
+   Display total quantity drunk on Adafruit_7segment
+*/
 void displayQuantity(double quantity) {
-  matrix.println(quantity, 2);
-  matrix.writeDisplay();
+  //  matrix.println(quantity, 2);
+  //  matrix.writeDisplay();
 }
 
 void sendQuantity(double quantity) {
@@ -64,8 +65,8 @@ void sendQuantity(double quantity) {
   HttpClient client;
 
   // Make a HTTP request:
-  String req = "http://192.168.43.91:8090/drink?name=Marcel&quantity=" + String(quantity*1000);
-  Console.println(req);
+  String req = "http://192.168.43.91:8090/drink?name=Marcel&quantity=" + String(quantity * 1000);
+  Serial.println(req);
   client.get(req);
 }
 
