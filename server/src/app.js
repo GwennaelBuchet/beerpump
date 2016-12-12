@@ -77,7 +77,7 @@ app.get("/drink", function (req, res) {
 
     var drinker = _getDrinkerByName(name);
     var oldQty = parseFloat(drinker.quantity);
-    drinker.quantity = oldQty + parseFloat(qty);
+    drinker.quantity = oldQty + (parseFloat(qty) / 1000);
 
 
     console.log(drinker.name + " drink " + parseFloat(qty) + ". A total of " + drinker.quantity);
